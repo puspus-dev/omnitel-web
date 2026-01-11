@@ -5,98 +5,69 @@
 <title>My OmniTel Dashboard</title>
 <link rel="stylesheet" href="assets/css/style.css">
 <style>
-  .dashboard { width: 980px; margin: 20px auto; }
-  .panel { border:1px solid #ccc; padding:20px; background:#fff; margin-bottom:20px; box-shadow:4px 4px 0 #ccc;}
-  .panel h3 { background:#7ac142; color:#fff; padding:5px 10px; margin-top:0; }
-  .stat { font-size:14px; margin:5px 0; }
-  .logout-btn { padding:6px 12px; background:#7ac142; color:#fff; border:none; cursor:pointer; }
-  .logout-btn:hover { background:#4e8f2a; }
+.dashboard { width: 980px; margin: 20px auto; }
+.panel { border:1px solid #ccc; padding:20px; background:#fff; margin-bottom:20px; box-shadow:4px 4px 0 #ccc;}
+.panel h3 { background:#7ac142; color:#fff; padding:5px 10px; margin-top:0; }
+.stat { font-size:14px; margin:5px 0; }
+.user-list { list-style:none; padding:0; }
+.user-list li { padding:5px; border-bottom:1px solid #ccc; cursor:pointer; }
+.user-list li:hover { background:#e9f4e1; }
+.logout-btn { padding:6px 12px; background:#7ac142; color:#fff; border:none; cursor:pointer; }
+.logout-btn:hover { background:#4e8f2a; }
+.message-box { margin-top:10px; font-size:13px; }
 </style>
-<script>
-  let currentUser = localStorage.getItem('currentUser');
-  let users = JSON.parse(localStorage.getItem('users')||'{}');
-
-  if(!currentUser || !users[currentUser]){
-    alert('Nincs belépett felhasználó! Kérlek, lépj be.');
-    window.location.href='myomnitel.html';
-  }
-
-  // Példa adatok csomagokhoz
-  const packages = {
-    "Klasszik 2009": {percek:100, sms:100, fee:3990},
-    "Omni Plus": {percek:300, sms:200, fee:6990},
-    "OmniTel Free": {percek:50, sms:50, fee:0}
-  };
-
-  // Random usage generátor (valós idejű effekt)
-  let usage = {percek:0, sms:0};
-  let userPackage = localStorage.getItem('userPackage') || 'OmniTel Free';
-
-  function updateUsage(){
-    if(usage.percek < packages[userPackage].percek){
-      usage.percek += Math.floor(Math.random()*3);
-      if(usage.percek>packages[userPackage].percek) usage.percek=packages[userPackage].percek;
-    }
-    if(usage.sms < packages[userPackage].sms){
-      usage.sms += Math.floor(Math.random()*2);
-      if(usage.sms>packages[userPackage].sms) usage.sms=packages[userPackage].sms;
-    }
-    document.getElementById('usage-minutes').textContent = usage.percek;
-    document.getElementById('usage-sms').textContent = usage.sms;
-  }
-
-  setInterval(updateUsage, 2000); // 2 másodpercenként frissít
-
-  function logout(){
-    localStorage.removeItem('currentUser');
-    alert('Kijelentkeztél!');
-    window.location.href='myomnitel.html';
-  }
-</script>
 </head>
 <body>
 <div class="topbar"><div class="inner">My OmniTel Dashboard</div></div>
 <div class="header">
-  <div class="inner">
-    <div class="logo">OmniTel</div>
-    <nav>
-      <a href="index.html">Főoldal</a>
-      <a href="dijcsomagok.html">Díjcsomagok</a>
-      <a href="keszulekek.html">Készülékek</a>
-      <a href="internet.html">Internet</a>
-      <a href="myomnitel.html">My OmniTel</a>
-    </nav>
-  </div>
+<div class="inner">
+<div class="logo">OmniTel</div>
+<nav>
+<a href="index.html">Főoldal</a>
+<a href="dijcsomagok.html">Díjcsomagok</a>
+<a href="keszulekek.html">Készülékek</a>
+<a href="internet.html">Internet</a>
+<a href="myomnitel.html">My OmniTel</a>
+</nav>
 </div>
+</div>
+
 
 <div class="dashboard">
-  <div class="panel">
-    <h3>Felhasználói adatok</h3>
-    <div class="stat">Telefonszám: <span id="dash-phone"></span></div>
-    <div class="stat">Előfizetett csomag: <span id="dash-package"></span></div>
-  </div>
-
-  <div class="panel">
-    <h3>Felhasználás</h3>
-    <div class="stat">Felhasznált percek: <span id="usage-minutes">0</span> / <span id="total-minutes"></span></div>
-    <div class="stat">Felhasznált SMS: <span id="usage-sms">0</span> / <span id="total-sms"></span></div>
-  </div>
-
-  <div class="panel">
-    <h3>Havidíj</h3>
-    <div class="stat">Havidíj: <span id="monthly-fee"></span> Ft</div>
-  </div>
-
-  <button class="logout-btn" onclick="logout()">Kijelentkezés</button>
+<div class="panel">
+<h3>Felhasználói adatok</h3>
+<div class="stat">Telefonszám: <span id="dash-phone"></span></div>
+<div class="stat">Előfizetett csomag: <span id="dash-package"></span></div>
 </div>
 
-<script>
-  // Inicializálás dashboard adatok
-  document.getElementById('dash-phone').textContent = currentUser;
-  document.getElementById('dash-package').textContent = userPackage;
-  document.getElementById('total-minutes').textContent = packages[userPackage].percek;
-  document.getElementById('total-sms').textContent = packages[userPackage].sms;
-  document.getElementById('monthly-fee').textContent = packages[userPackage].fee;
-</script>
+
+<div class="panel">
+<h3>Felhasználás</h3>
+<div class="stat">Felhasznált percek: <span id="usage-minutes">0</span> / <span id="total-minutes"></span></div>
+<div class="stat">Felhasznált SMS: <span id="usage-sms">0</span> / <span id="total-sms"></span></div>
+</div>
+
+
+<div class="panel">
+<h3>Felhasználók</h3>
+<ul class="user-list" id="user-list"></ul>
+</div>
+
+
+<div class="panel">
+<h3>Üzenet / Hívás</h3>
+<div>
+<input type="text" id="sms-input" placeholder="Üzenet..." style="width:70%; padding:5px;">
+<button onclick="sendSMS()">Küldés</button>
+</div>
+<div class="message-box" id="messages"></div>
+</div>
+
+
+<button class="logout-btn" onclick="logout()">Kijelentkezés</button>
+</div>
+
+
+<script src="assets/js/dashboard.js"></script>
 </body>
 </html>
