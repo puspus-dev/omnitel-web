@@ -2,22 +2,46 @@
 <html lang="hu">
 <head>
 <meta charset="UTF-8">
-<title>OmniTel – Díjcsomagok</title>
-<link rel="stylesheet" href="assets/css/style.css">
+<title>OmniTel Díjcsomagok</title>
 </head>
 <body>
-<div class="topbar"><div class="inner">Lakossági | Üzleti | My OmniTel</div></div>
-<div class="header"><div class="inner"><div class="logo">OmniTel</div><nav><a href="index.html">Főoldal</a><a href="dijcsomagok.html">Díjcsomagok</a></nav></div></div>
-<div class="main"><div class="content">
-<div class="breadcrumb">Főoldal &gt; Díjcsomagok</div>
-<h2>Díjcsomagok</h2>
-<table class="tariff-table">
-<tr><th>Csomag</th><th>Percek</th><th>SMS</th><th>Havidíj</th></tr>
-<tr><td>🟢 Klasszik 2009</td><td>100</td><td>100</td><td>3 990 Ft</td></tr>
-<tr><td>🟢 Omni Plus</td><td>300</td><td>200</td><td>6 990 Ft</td></tr>
-<tr><td>🆓 OmniTel Free</td><td>50</td><td>50</td><td>0 Ft</td></tr>
-</table>
-</div></div>
-<footer><div class="inner">© 2009 OmniTel Zrt.</div></footer>
+<h1>Válassz díjcsomagot</h1>
+<div id="packages">
+<button onclick="choosePackage('OmniTel Free')">OmniTel Free</button>
+<button onclick="choosePackage('Klasszik 2009')">Klasszik 2009</button>
+<button onclick="choosePackage('Omni Plus')">Omni Plus</button>
+</div>
+<h2>Választható telefonszámok:</h2>
+<div id="random-numbers"></div>
+<script>
+function generateRandomNumbers() {
+const numbersDiv = document.getElementById('random-numbers');
+numbersDiv.innerHTML = '';
+let numbers = [];
+for(let i=0;i<3;i++){
+let randomNum = '06 21 ' + Math.floor(1000000 + Math.random()*9000000);
+numbers.push(randomNum);
+const btn = document.createElement('button');
+btn.textContent = randomNum;
+btn.onclick = ()=> selectNumber(randomNum);
+numbersDiv.appendChild(btn);
+}
+localStorage.setItem('randomNumbers', JSON.stringify(numbers));
+}
+
+
+function choosePackage(pkg){
+localStorage.setItem('userPackage', pkg);
+generateRandomNumbers();
+alert('Most válassz egy telefonszámot a három random közül!');
+}
+
+
+function selectNumber(number){
+localStorage.setItem('selectedNumber', number);
+alert('Kiválasztottad: ' + number + '\nMost regisztrálhatsz a MyOmniTel oldalán.');
+window.location.href = 'myomnitel.html';
+}
+</script>
 </body>
 </html>

@@ -3,82 +3,44 @@
 <head>
 <meta charset="UTF-8">
 <title>My OmniTel Belépés / Regisztráció</title>
-<link rel="stylesheet" href="assets/css/style.css">
-<style>
-body { font-family: Arial, sans-serif; background-color: #f0f8ff; text-align: center; padding-top: 50px; }
-input { display: block; margin: 10px auto; padding: 8px; width: 200px; }
-button { padding: 8px 16px; margin: 10px; cursor: pointer; }
-.container { display: inline-block; padding: 20px; border: 1px solid #ccc; border-radius: 8px; background-color: #fff; }
-h1 { color: #0077cc; }
-</style>
 </head>
 <body>
-<div class="container">
 <h1>My OmniTel</h1>
 <h2>Regisztráció</h2>
-<input type="text" id="reg-phone" placeholder="06 21 XXX XXXX">
 <input type="password" id="reg-password" placeholder="Jelszó">
 <button onclick="registerUser()">Regisztráció</button>
-
-
 <h2>Belépés</h2>
-<input type="text" id="login-phone" placeholder="06 21 XXX XXXX">
 <input type="password" id="login-password" placeholder="Jelszó">
 <button onclick="loginUser()">Belépés</button>
-</div>
-
-
 <script>
-// Telefon validáció: csak 06 21-es szám
-function validatePhoneNumber(phone) {
-const regex = /^06\s?21\d{6,7}$/;
-return regex.test(phone);
+const selectedNumber = localStorage.getItem('selectedNumber');
+if(!selectedNumber){
+alert('Előbb válassz egy számot a díjcsomag választásnál!');
+window.location.href='dijcsomagok.html';
 }
 
 
 function registerUser() {
-const phoneInput = document.getElementById('reg-phone').value.trim();
 const passwordInput = document.getElementById('reg-password').value;
-
-
-if (!validatePhoneNumber(phoneInput)) {
-alert('Csak 06 21-gyel kezdődő telefonszám regisztrálható!');
-return;
-}
-
-
 let users = JSON.parse(localStorage.getItem('users') || '{}');
-if (users[phoneInput]) {
+if (users[selectedNumber]) {
 alert('Ez a szám már regisztrálva van!');
 return;
 }
-
-
-users[phoneInput] = { password: passwordInput };
+users[selectedNumber] = { password: passwordInput };
 localStorage.setItem('users', JSON.stringify(users));
 alert('Sikeres regisztráció! Most bejelentkezhetsz.');
 }
 
 
 function loginUser() {
-const phoneInput = document.getElementById('login-phone').value.trim();
 const passwordInput = document.getElementById('login-password').value;
-
-
-if (!validatePhoneNumber(phoneInput)) {
-alert('Csak 06 21-gyel kezdődő telefonszám fogadható el!');
-return;
-}
-
-
 let users = JSON.parse(localStorage.getItem('users') || '{}');
-if (!users[phoneInput] || users[phoneInput].password !== passwordInput) {
-alert('Hibás telefonszám vagy jelszó!');
+if (!users[selectedNumber] || users[selectedNumber].password !== passwordInput) {
+alert('Hibás jelszó!');
 return;
 }
-
-
-localStorage.setItem('currentUser', phoneInput);
+localStorage.setItem('currentUser', selectedNumber);
 window.location.href = 'dashboard.html';
 }
 </script>
