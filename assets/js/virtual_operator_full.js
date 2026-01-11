@@ -1,4 +1,4 @@
-// ===== FILE: assets/js/virtual_operator_full.js =====
+// ===== FILE: assets/js/virtual_operator_dashboard_full.js =====
 
 
 // === Felhasználói adatok ===
@@ -63,7 +63,6 @@ usageMinutesEl.textContent = usage.percek;
 usageSmsEl.textContent = usage.sms;
 
 
-// Free csomag limit figyelés
 if(userPackage==='OmniTel Free'){
 if(usage.percek>=packages[userPackage].percek*0.8 || usage.sms>=packages[userPackage].sms*0.8){
 usageMinutesEl.style.color='red';
@@ -93,10 +92,55 @@ msgInput.value='';
 showIncomingSmsIcon(selectedUser);
 
 
-setTimeout(function() {
-    const reply = document.createElement('div');  // új div létrehozása
-    reply.textContent = selectedUser + " → Te: OK!"; // szöveg beállítása
-    if (messagesEl) {  // ellenőrizzük, hogy a DOM elem létezik
-        messagesEl.appendChild(reply); // hozzáadjuk a messages panelhez
-    }
-}, 2000 + Math.random() * 1000);
+setTimeout(function(){
+const reply = document.createElement('div');
+reply.textContent = selectedUser + ' → Te: OK!';
+if(messagesEl){ messagesEl.appendChild(reply); }
+}, 2000 + Math.random()*1000);
+}
+
+
+// === WebRTC hívás integráció ===
+let localStream, peerConnection;
+const config = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
+
+
+async function startCall() {
+  if (!selectedUser) { 
+    alert('Válassz felhasználót!'); 
+    return; 
+  }
+  try {
+    localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    peerConnection = new RTCPeerConnection(config);
+    localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+
+    peerConnection.ontrack = event => {
+      const audioEl = document.createElement('audio');
+      audioEl.srcObject = event.streams[0];
+      audioEl.autoplay = true;
+      document.body.appendChild(audioEl);
+    };
+
+    const offer = await peerConnection.createOffer();
+    await peerConnection.setLocalDescription(offer);
+
+    let signals = JSON.parse(localStorage.getItem('webrtc-signaling-demo') || '[]');
+    signals.push({ from: currentUser, to: selectedUser, type: 'offer', sdp: offer });
+    localStorage.setItem('webrtc-signaling-demo', JSON.stringify(signals));
+
+    showIncomingCallIcon(selectedUser);
+    alert('Hívás indítva ' + selectedUser + ' felé');
+  } catch(err) {
+    console.error('Hiba a hívás indításakor:', err);
+    alert('Hiba történt a hívás indításakor!');
+  }
+} // <-- a startCall itt lezárva
+
+// Top-level exportok külön
+window.startCall = startCall;
+window.endCall = endCall;
+window.showIncomingCallIcon = showIncomingCallIcon;
+window.showIncomingSmsIcon = showIncomingSmsIcon;
+window.sendSMS = sendSMS;
+window.logout = logout;
