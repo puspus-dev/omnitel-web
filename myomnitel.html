@@ -5,69 +5,98 @@
 <title>My OmniTel</title>
 <link rel="stylesheet" href="assets/css/style.css">
 <style>
-/* Retro 2009 login panel */
-.login-panel {
-border: 2px solid #7ac142;
-background: linear-gradient(#e9f4e1,#ffffff);
-padding: 20px;
-width: 320px;
-margin-bottom: 20px;
-box-shadow: 4px 4px 0 #ccc;
-}
-.login-panel h3 {
-margin-top: 0;
-background: #7ac142;
-color: #fff;
-padding: 5px 10px;
-font-size: 14px;
-}
-.login-panel input {
-width: 100%;
-padding: 5px;
-margin: 5px 0;
-border: 1px solid #ccc;
-}
-.login-panel button {
-background: #7ac142;
-border: none;
-padding: 6px 12px;
-color: #fff;
-font-weight: bold;
-cursor: pointer;
-}
-.login-panel button:hover {
-background: #4e8f2a;
-}
+  /* Retro 2009 login panel */
+  .login-panel {
+    border: 2px solid #7ac142;
+    background: linear-gradient(#e9f4e1,#ffffff);
+    padding: 20px;
+    width: 320px;
+    margin-bottom: 20px;
+    box-shadow: 4px 4px 0 #ccc;
+  }
+  .login-panel h3 {
+    margin-top: 0;
+    background: #7ac142;
+    color: #fff;
+    padding: 5px 10px;
+    font-size: 14px;
+  }
+  .login-panel input {
+    width: 100%;
+    padding: 5px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+  }
+  .login-panel button {
+    background: #7ac142;
+    border: none;
+    padding: 6px 12px;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .login-panel button:hover {
+    background: #4e8f2a;
+  }
+  .login-success{color:green;margin-top:10px;font-size:13px}
+  .login-error{color:red;margin-top:10px;font-size:13px}
 </style>
 <script>
 let users = JSON.parse(localStorage.getItem('users') || '{}');
 
-
 function registerUser() {
-const phone = document.getElementById('reg-phone').value;
-const pass = document.getElementById('reg-pass').value;
-const msg = document.getElementById('reg-msg');
-if(phone && pass){
-if(users[phone]){ msg.textContent='Ez a telefonszám már regisztrált.'; msg.className='login-error'; }
-else{ users[phone]=pass; localStorage.setItem('users', JSON.stringify(users)); msg.textContent='Sikeres regisztráció!'; msg.className='login-success'; }
+  const phone = document.getElementById('reg-phone').value;
+  const pass = document.getElementById('reg-pass').value;
+  const msg = document.getElementById('reg-msg');
+  if(phone && pass){
+    if(users[phone]){
+      msg.textContent = 'Ez a telefonszám már regisztrált.';
+      msg.className='login-error';
+    } else {
+      users[phone] = pass;
+      localStorage.setItem('users', JSON.stringify(users));
+      localStorage.setItem('currentUser', phone);
+      localStorage.setItem('userPackage', 'OmniTel Free'); // default Free csomag
+      msg.textContent = 'Sikeres regisztráció! Átirányítás a dashboardra…';
+      msg.className='login-success';
+      setTimeout(()=>{ window.location.href='dashboard.html'; }, 1000);
+    }
+  }
 }
-}
-
 
 function loginUser() {
-const phone = document.getElementById('login-phone').value;
-const pass = document.getElementById('login-pass').value;
-const msg = document.getElementById('login-msg');
-if(users[phone] && users[phone]===pass){ msg.textContent='Sikeres belépés!'; msg.className='login-success'; }
-else{ msg.textContent='Hibás telefonszám vagy jelszó.'; msg.className='login-error'; }
+  const phone = document.getElementById('login-phone').value;
+  const pass = document.getElementById('login-pass').value;
+  const msg = document.getElementById('login-msg');
+  if(users[phone] && users[phone]===pass){
+    localStorage.setItem('currentUser', phone);
+    if(!localStorage.getItem('userPackage')) localStorage.setItem('userPackage', 'OmniTel Free');
+    msg.textContent='Sikeres belépés! Átirányítás a dashboardra…';
+    msg.className='login-success';
+    setTimeout(()=>{ window.location.href='dashboard.html'; }, 1000);
+  } else {
+    msg.textContent='Hibás telefonszám vagy jelszó.';
+    msg.className='login-error';
+  }
 }
 </script>
 </head>
 <body>
 <div class="topbar"><div class="inner">My OmniTel – Ügyfélbelépés</div></div>
-<div class="header"><div class="inner"><div class="logo">OmniTel</div></div></div>
-<div class="main"><div class="content">
+<div class="header">
+  <div class="inner">
+    <div class="logo">OmniTel</div>
+    <nav>
+      <a href="index.html">Főoldal</a>
+      <a href="dijcsomagok.html">Díjcsomagok</a>
+      <a href="keszulekek.html">Készülékek</a>
+      <a href="internet.html">Internet</a>
+      <a href="myomnitel.html">My OmniTel</a>
+    </nav>
+  </div>
+</div>
 
+<div class="main"><div class="content">
 
 <div class="login-panel">
 <h3>Regisztráció</h3>
@@ -77,7 +106,6 @@ else{ msg.textContent='Hibás telefonszám vagy jelszó.'; msg.className='login-
 <div id="reg-msg"></div>
 </div>
 
-
 <div class="login-panel">
 <h3>Belépés</h3>
 <label>Telefonszám</label><input type="text" id="login-phone">
@@ -86,12 +114,10 @@ else{ msg.textContent='Hibás telefonszám vagy jelszó.'; msg.className='login-
 <div id="login-msg"></div>
 </div>
 
-
 <div class="login-panel">
 <h3>Ingyenes csomag</h3>
 <p>OmniTel Free: 50 perc + 50 SMS havonta, 0 Ft/hó.</p>
 </div>
-
 
 </div></div>
 <footer><div class="inner">© 2009 OmniTel Zrt.</div></footer>
